@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenGo</title>
+    <link rel="icon" href="icons/icon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="./manifest.json">
+    <script src="sw.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="section">
+            <div class="learn">
+                <div class="question">
+                    <p class="font-style" id="question-output">あ</p>
+                </div>
+                <div class="awnser">
+                    <p class="font-style">Type your answer here</p>
+                    <input id="user-input" type="text" placeholder="...">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container">
+        <div class="section">
+
+
+            <div class="selection">
+                <div class="select-wrapper">
+                    <div class="sel_box select_hiragana active_selection" onclick="toggleSelection('hiragana')">
+                        <h1>Hiragana</h1>
+                    </div>
+                    <div class="sel_box select_katakana" onclick="toggleSelection('katakana')">
+                        <h1>Katakana</h1>
+                    </div>
+                    <div class="sel_box select_settings" onclick="toggleSelection('settings')">
+                        <h1>Settings</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hiragana table-section">
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h2>Get to know the main writing system in Japanese</h2>
+                    </div>
+                    <table class="char-table" id="hiragana-table">
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h2>Dakuon</h2>
+                        <p>Adds a symbol to change the sound</p>
+                    </div>
+                    <table class="char-table" id="hiragana-dakuon-table">
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="katakana table-section">
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h2>Practice characters used for loanwords</h2>
+                    </div>
+                    <table class="char-table" id="katakana-table">
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h2>Dakuon</h2>
+                        <p>Adds a symbol to change the sound</p>
+                    </div>
+                    <table class="char-table" id="katakana-dakuon-table">
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="settings table-section">
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h2>Customize your learning experience</h2>
+                    </div>
+                    <p class="slider-value">
+                        Characters per question: <span id="slider-value">1</span>
+                    </p>
+                    <input type="range" id="chars-slider" min="1" max="5" value="1">
+
+                    <p class="slider-value">
+                        Bias (priority on weak characters): <span id="bias-value">50</span>%
+                    </p>
+                    <input type="range" id="bias-slider" min="0" max="100" value="50" step="1">
+                </div>
+            </div>
+
+            <!-- <div class="kanji table-section">
+                <div class="table-wrapper">
+                    <div class="table-header">
+                        <h2>JLPT N5 Kanji nach Themen</h2>
+                        <p>Lerne Kanji geordnet nach Bedeutung & Kontext</p>
+                    </div>
+                    <div id="kanji-n5-container"></div>
+                </div>
+            </div> -->
+
+
+
+        </div>
+
+        <footer>
+            <div class="copyright">© 2026 Cato R.</div>
+        </footer>
+
+
+    </div>
+
+
+
+
+</body>
+<script src="table_builder.js"></script>
+<script src="script.js"></script>
+
+</html>

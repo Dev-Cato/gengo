@@ -1,0 +1,448 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+:root {
+    --learn-scale: 0.90;
+    --table-scale: 0.90;
+
+    --color-background: rgb(19, 31, 36);
+    --color-background-secondary: rgba(19, 31, 36, 0);
+
+    --color-text: rgb(240, 240, 240);
+    --color-text-secondary: rgb(80, 100, 110);
+
+
+    --color-active: rgba(32, 48, 55, 1);
+
+
+    --color-input: rgb(55, 70, 80);
+
+
+    --color-border: rgb(55, 70, 80);
+    --color-progress-bg: rgb(55, 70, 80);
+    --color-progress-fill: hsl(45, 90%, 60%);
+
+    --color-selection-bar: rgb(75, 190, 250);
+}
+
+@font-face {
+    font-family: font;
+    src: url(fonts/KaoriGelBold.ttf);
+}
+
+html,
+body {
+    font-family: font;
+    height: 100%;
+    margin: 0;
+    background-color: var(--color-background);
+}
+
+
+.container {
+    margin-top: 2rem;
+}
+
+.learn {
+    height: calc(30rem);
+    /* Höhe in rem und Prozent kombiniert */
+    width: 80%;
+    max-width: calc(25rem);
+    /* Breite in rem und Prozent kombiniert */
+    margin: auto;
+    border: calc(0.25rem * var(--learn-scale)) solid var(--color-border);
+    border-bottom: calc(0.375rem * var(--learn-scale)) solid var(--color-border);
+
+    border-radius: calc(1rem * var(--learn-scale));
+    background-color: var(--color-background-secondary);
+    /* Sicherstellen, dass die Größe mit zoom skaliert */
+}
+
+.question {
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.question p {
+    font-size: 8rem;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1;
+    text-align: center;
+}
+
+.awnser {
+    font-size: 1.25rem;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.awnser p {
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+    /* oder z.B. 8px, also 0.5rem */
+}
+
+
+.awnser input[type=text] {
+    width: 50%;
+    text-align: center;
+    background-color: var(--color-input);
+    padding: calc(0.5rem * var(--learn-scale));
+    font-size: 1rem;
+    outline: none;
+    color: var(--color-text);
+    border: none;
+    border-radius: calc(0.5rem * var(--learn-scale));
+}
+
+
+
+
+
+
+.select-wrapper {
+    position: relative;
+    display: flex;
+    background-color: var(--color-background-secondary);
+    padding: 0.5rem 1rem;
+    margin: 0 auto;
+    justify-content: center;
+}
+
+.sel_box {
+    position: relative;
+    flex: 1 1 0;
+    max-width: 10rem;
+    /* alternativ: 100% oder feste px/rem, je nach Bedarf */
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: transparent;
+    user-select: none;
+    transition: transform 0.2s;
+    text-align: center;
+
+    border-bottom: 3px solid var(--color-text-secondary);
+}
+
+.sel_box h1 {
+    font-size: 1.25rem;
+    color: var(--color-text-secondary);
+    transition: color 0.3s;
+    margin: 0;
+}
+
+/* Hover */
+.sel_box:hover {
+    background-color: var(--color-active);
+}
+
+/* Aktive Auswahl */
+.sel_box.active_selection::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--color-selection-bar);
+    border-radius: 2px 2px 0 0;
+}
+
+.sel_box.active_selection h1 {
+    color: var(--color-selection-bar);
+    font-weight: bold;
+}
+
+
+
+
+.table-section {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.3s ease;
+    transform: translateY(20px);
+    /* Setzt die Tabelle anfangs etwas nach unten */
+}
+
+/* Zeige die .table-section an, wenn sie sichtbar ist */
+.table-section.visible {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    /* Die Tabelle wird nach oben verschoben, um sichtbar zu werden */
+}
+
+.table-wrapper {
+    width: 100%;
+    max-width: 45rem;
+    margin: 0 auto;
+    padding: calc(1rem * var(--table-scale));
+    border-radius: calc(1rem * var(--table-scale));
+    color: var(--color-text);
+}
+
+.table-wrapper h2 {
+    padding: 1rem;
+}
+
+.table-wrapper p {
+    padding: 0.25rem 1rem;
+}
+
+
+.char-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: calc(0.5rem * var(--table-scale));
+    text-align: center;
+}
+
+.char-table td {
+    border-radius: calc(1rem * var(--table-scale));
+    padding: calc(0.75rem * var(--table-scale)) calc(1.5rem * var(--table-scale));
+    width: calc(5rem * var(--table-scale));
+    background-color: var(--color-background-secondary);
+    opacity: 0.4;
+
+    border: calc(0.25rem * var(--table-scale)) solid var(--color-border);
+    border-bottom: calc(0.375rem * var(--table-scale)) solid var(--color-border);
+
+    transition: transform 0.2s, border-color 0.2s ease, opacity 0.2s;
+
+    user-select: none;
+    /* Für Safari */
+    -webkit-user-select: none;
+
+}
+
+.char-table td.filled {
+    border-color: var(--color-progress-fill);
+    box-shadow: 0px 0px .5rem var(--color-progress-fill);
+}
+
+.char-table td.active {
+    opacity: 1;
+}
+
+.char-table td:hover {
+    transform: scale(1.05);
+}
+
+.char-table td.active:hover {
+    transform: scale(1.05);
+}
+
+.jp {
+    font-size: calc(2rem * var(--table-scale));
+    font-weight: bold;
+    color: var(--color-text);
+}
+
+.rom {
+    font-size: calc(1.2rem * var(--table-scale));
+    color: var(--color-text-secondary);
+    /* margin-top: calc(0.3rem * var(--table-scale)); */
+}
+
+/* Fortschrittsbalken */
+.progress {
+    position: relative;
+    margin-top: calc(0.5rem * var(--table-scale));
+    height: calc(0.5rem * var(--table-scale));
+    background-color: var(--color-progress-bg);
+    border-radius: calc(0.25rem * var(--table-scale));
+}
+
+.progress::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: var(--color-progress-fill);
+    /* --progress-width wird im script dynamisch gesetzt, 0% ist standart*/
+    width: var(--progress-width, 0%);
+
+    border-radius: calc(0.25rem * var(--table-scale));
+    transition: width 0.4s ease;
+}
+
+/* Fortschritt dynamisch setzen */
+.progress[data-progress]:before {
+    width: attr(data-progress percentage);
+    /* funktioniert in modernen Browsern mit JS oder polyfill */
+}
+
+
+
+
+
+
+
+
+footer {
+    margin-top: 4rem;
+    padding: 2rem 1rem 1rem 1rem;
+    background: linear-gradient(to bottom, var(--color-background) 0%, #000 25%);
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3.5rem;
+    max-width: 10rem;
+    margin: 0 auto 1rem auto;
+    padding: 0 2rem;
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    background-color: transparent;
+    border-bottom: 3px solid var(--color-text-secondary);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s ease;
+    font-family: font;
+    text-align: center;
+}
+
+.logout:hover {
+    background-color: var(--color-active);
+    color: var(--color-selection-bar);
+}
+
+.settings .table-wrapper {
+    background-color: var(--color-background-secondary);
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.settings .table-header h2 {
+    font-size: 1.5rem;
+    color: var(--color-text);
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.settings .slider-value {
+    font-size: 1rem;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+#chars-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 60%;
+    max-width: 20rem;
+    height: 0.75rem;
+    border-radius: 0.375rem;
+    background: var(--color-progress-bg);
+    outline: none;
+    transition: background 0.3s;
+    margin: 0 auto 1rem auto;
+    display: block;
+}
+
+/* Slider-Füllung bei Chrome/Safari */
+#chars-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background: var(--color-selection-bar);
+    cursor: pointer;
+    box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.3);
+    transition: background 0.3s;
+}
+
+#chars-slider::-moz-range-thumb {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background: var(--color-selection-bar);
+    cursor: pointer;
+    border: none;
+}
+
+/* Hover-Effekt */
+#chars-slider:hover::-webkit-slider-thumb {
+    background: rgb(90, 210, 255);
+}
+#chars-slider:hover::-moz-range-thumb {
+    background: rgb(90, 210, 255);
+}
+
+#bias-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 60%;
+    max-width: 20rem;
+    height: 0.75rem;
+    border-radius: 0.375rem;
+    background: var(--color-progress-bg);
+    outline: none;
+    transition: background 0.3s;
+    margin: 0 auto 1rem auto;
+    display: block;
+}
+
+#bias-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background: var(--color-selection-bar);
+    cursor: pointer;
+    box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.3);
+    transition: background 0.3s;
+}
+
+#bias-slider::-moz-range-thumb {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background: var(--color-selection-bar);
+    cursor: pointer;
+    border: none;
+}
+
+#bias-slider:hover::-webkit-slider-thumb {
+    background: rgb(90, 210, 255);
+}
+#bias-slider:hover::-moz-range-thumb {
+    background: rgb(90, 210, 255);
+}
+
+@media (max-width: 500px) {
+    :root {
+        --learn-scale: 0.75;
+        --table-scale: 0.75;
+    }
+
+    .jp {
+        font-size: calc(1.5rem * var(--table-scale));
+    }
+
+    .rom {
+        font-size: calc(1rem * var(--table-scale));
+    }
+}
