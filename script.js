@@ -1,7 +1,7 @@
 let charsPerQuestion = 1; // Anzahl der Zeichen pro Frage
 let bias = 50; // 0 = komplett zufällig, 100 = komplett performance-basiert
 
-let playSounds = true; // Ob Sounds abgespielt werden sollen
+let playSounds = false; // Ob Sounds abgespielt werden sollen
 
 const hiraganaList = {
     // Klarer Klang (Seion)
@@ -637,6 +637,23 @@ function toggleSelection(selected) {
     const activeBox = document.querySelector(`.select_${selected}`);
     activeBox.classList.add('active_selection');
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("question-output")
+        .addEventListener("click", showAnswerPopup);
+});
+
+document.getElementById("question-output").addEventListener("click", () => {
+    const answerEl = document.getElementById("correct-answer");
+    if (!currentQuestion) return;
+
+    answerEl.textContent = currentQuestion.jp + " → " + currentQuestion.romaji;
+    answerEl.style.display = "block";
+
+    setTimeout(() => {
+        answerEl.style.display = "none";
+    }, 2000); // Antwort verschwindet nach 2 Sekunden
+});
 
 // Beim Laden der Seite die Standard-Selektion (Hiragana) aktivieren
 window.onload = function () {
