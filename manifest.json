@@ -1,7 +1,7 @@
 {
     "name": "GenGo",
     "short_name": "GenGo",
-    "start_url": "/",
+    "start_url": "/gengo/"
     "display": "standalone",
     "background_color": "#141e23",
     "theme_color": "#141e23",
