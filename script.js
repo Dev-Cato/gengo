@@ -1,7 +1,8 @@
 let charsPerQuestion = 1; // Anzahl der Zeichen pro Frage
 let bias = 50; // 0 = komplett zufällig, 100 = komplett performance-basiert
+var hint_c = 3;
 
-let playSounds = false; // Ob Sounds abgespielt werden sollen
+let playSounds = true; // Ob Sounds abgespielt werden sollen
 
 const hiraganaList = {
     // Klarer Klang (Seion)
@@ -87,11 +88,12 @@ var correctCount = 0; // Anzahl der richtigen Antworten
 
 var currentQuestion = null;
 var got_wrong = false;
+var got_wrong_count = 0;
 
 
 function compressAccuracyData(AccHiraganaList, hiraganaList) {
     const compressedData = [];
-  
+
     // Iterate over each character in hiraganaList
     for (const key in hiraganaList) {
         // Get accuracy data for this key
@@ -103,11 +105,11 @@ function compressAccuracyData(AccHiraganaList, hiraganaList) {
         for (let i = 0; i < accuracyData.last10_correct.length; i++) {
             packedLast10 |= accuracyData.last10_correct[i] << (9 - i); // Shift to correct bit position
         }
-        
+
         // Add the compressed data for this character to the result
         compressedData.push([key, accuracyData.times_learned, accuracyData.times_correct, packedLast10]);
     }
-    
+
     return compressedData;
 }
 
@@ -440,6 +442,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 got_wrong = false;
+                got_wrong_count = 0;
                 user_input.value = "";
                 newQuestion();
             } else {
@@ -456,6 +459,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 got_wrong = true;
+                got_wrong_count++;
+
+                if (got_wrong_count >= hint_c) {
+                    const answerEl = document.getElementById("correct-answer");
+                    if (!currentQuestion) return;
+
+                    answerEl.textContent = currentQuestion.romaji;
+                    answerEl.style.opacity = 1;
+
+                    setTimeout(() => {
+                        answerEl.style.opacity = 0;
+                        setTimeout(() => {
+                            answerEl.textContent = "";
+                        }, 250)
+                    }, 1750);
+                }
+
                 user_input.value = "";
             }
         }
@@ -597,8 +617,22 @@ function playRandomCorrectSound() {
 
 function playWrongSound() {
     if (!playSounds) return;
-    const audio = new Audio(`sounds/wrong.mp3`);
-    audio.play();
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    fetch('sounds/correct.mp3')
+        .then(response => response.arrayBuffer())
+        .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+        .then(audioBuffer => {
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+
+            // Leicht zufällige Abweichung in der Tonhöhe (z. B. 0.95 – 1.05)
+            const randomPitch = 0.25 + Math.random() * 0.1;
+            source.playbackRate.value = randomPitch;
+
+            source.connect(audioContext.destination);
+            source.start();
+        })
+        .catch(error => console.error('Fehler beim Laden der Audiodatei:', error));
 }
 
 
@@ -638,22 +672,7 @@ function toggleSelection(selected) {
     activeBox.classList.add('active_selection');
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("question-output")
-        .addEventListener("click", showAnswerPopup);
-});
 
-document.getElementById("question-output").addEventListener("click", () => {
-    const answerEl = document.getElementById("correct-answer");
-    if (!currentQuestion) return;
-
-    answerEl.textContent = currentQuestion.jp + " → " + currentQuestion.romaji;
-    answerEl.style.display = "block";
-
-    setTimeout(() => {
-        answerEl.style.display = "none";
-    }, 2000); // Antwort verschwindet nach 2 Sekunden
-});
 
 // Beim Laden der Seite die Standard-Selektion (Hiragana) aktivieren
 window.onload = function () {
@@ -661,8 +680,42 @@ window.onload = function () {
 };
 
 
+let last_opened = false
+
+window.visualViewport.addEventListener("resize", () => {
+    const keyboardHeight = window.innerHeight - window.visualViewport.height;
+
+    document.documentElement.style.setProperty(
+        "--keyboard-height",
+        keyboardHeight + "px"
+    );
+
+    // Tastatur erkannt, wenn Höhe stark schrumpft (typisch < 80 %)
+    if (keyboardHeight > 100) {
+        if (!last_opened) {
+            last_opened = true
+
+            setTimeout(() => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth" // für sanftes Scrollen
+                });
+            }, 100);
+        }
+        document.documentElement.classList.add("keyboard-open");
+    } else {
+        last_opened = false
+        document.documentElement.classList.remove("keyboard-open");
+    }
+
+    document.documentElement.style.setProperty(
+        "--vvh",
+        window.visualViewport.height + "px"
+    );
 
 
+
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     // Slider-Referenz
@@ -696,6 +749,16 @@ document.addEventListener("DOMContentLoaded", () => {
     biasSlider.addEventListener("input", (e) => {
         bias = Number(e.target.value);
         biasValueDisplay.textContent = bias;
+    });
+
+
+    // Hint-Slider-Handling
+    const hintSlider = document.getElementById("hint-slider");
+    const hintValueDisplay = document.getElementById("hint-value");
+
+    hintSlider.addEventListener("input", (e) => {
+        hint_c = Number(e.target.value);
+        hintValueDisplay.textContent = hint_c;
     });
 
 });
