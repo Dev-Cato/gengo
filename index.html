@@ -16,7 +16,8 @@
             <div class="learn">
                 <div class="question">
                     <p class="font-style" id="question-output">あ</p>
-                    <p id="correct-answer" style="display:none;"></p>
+                </div>
+                <div class="correct-answer" id="correct-answer">
                 </div>
                 <div class="awnser">
                     <p class="font-style">Type your answer here</p>
@@ -102,6 +103,12 @@
                         Bias (priority on weak characters): <span id="bias-value">50</span>%
                     </p>
                     <input type="range" id="bias-slider" min="0" max="100" value="50" step="1">
+
+                    <p class="hint-value">
+                        Hint (guesses before hint is shown): <span id="hint-value">3</span>
+                    </p>
+                    <input type="range" id="hint-slider" min="1" max="10" value="3" step="1">
+
                 </div>
             </div>
 
