@@ -2,7 +2,7 @@ let charsPerQuestion = 1; // Anzahl der Zeichen pro Frage
 let bias = 50; // 0 = komplett zufällig, 100 = komplett performance-basiert
 var hint_c = 3;
 
-let playSounds = true; // Ob Sounds abgespielt werden sollen
+let playSounds = false; // Ob Sounds abgespielt werden sollen
 
 const hiraganaList = {
     // Klarer Klang (Seion)
