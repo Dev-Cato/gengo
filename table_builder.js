@@ -60,6 +60,7 @@ function buildKanaTable(tableData, tableId) {
                     <div class="jp">${jp}</div>
                     <div class="rom">${rom}</div>
                     <div class="progress"></div>
+                    <div class="progress_count"></div>
                 `;
             }
             tr.appendChild(td);
