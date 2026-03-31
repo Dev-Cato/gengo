@@ -2,7 +2,7 @@ let charsPerQuestion = 1; // Anzahl der Zeichen pro Frage
 let bias = 50; // 0 = komplett zufällig, 100 = komplett performance-basiert
 var hint_c = 3;
 
-let playSounds = false; // Ob Sounds abgespielt werden sollen
+let playSounds = true; // Ob Sounds abgespielt werden sollen
 
 const hiraganaList = {
     // Klarer Klang (Seion)
@@ -276,116 +276,75 @@ window.addEventListener("visibilitychange", () => {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
+
     let total_hiragana_count = 0;
     let total_katakana_count = 0;
 
-    // Lade lokale Accuracy-Listen
-    const hiraganaData = localStorage.getItem("hiragana_accuracy_list");
-    const katakanaData = localStorage.getItem("katakana_accuracy_list");
+    // Helper: Wendet Accuracy-Daten auf eine Tabelle an
+    function applyAccuracyToTable(selector, accList) {
+        const rows = document.querySelectorAll(selector + ' tbody tr');
+        rows.forEach(row => {
+            row.querySelectorAll('td').forEach(cell => {
 
+                const romajiEl = cell.querySelector('.rom');
+                const progressBar = cell.querySelector('.progress');
+                const progressCount = cell.querySelector('.progress_count');
+
+                if (!romajiEl || !progressBar || !progressCount) return;
+
+                const romaji = romajiEl.textContent.toUpperCase().split(' ')[0];
+                const acc = accList[romaji];
+                if (!acc) return;
+
+                const accuracy = acc.last10_correct.reduce((a, b) => a + b, 0) / 10;
+                progressBar.style.setProperty("--progress-width", Math.round(accuracy * 100) + "%");
+                cell.classList.toggle("filled", accuracy === 1);
+
+                progressCount.textContent = acc.times_correct + " / " + acc.times_learned;
+            });
+        });
+    }
+
+    // Lade Hiragana
+    const hiraganaData = localStorage.getItem("hiragana_accuracy_list");
     if (hiraganaData) {
         try {
             AccHiraganaList = decompressAccuracyData(JSON.parse(hiraganaData), hiraganaList);
 
-            const hiraganaRows = document.querySelectorAll('#hiragana-table tbody tr');
-            hiraganaRows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                cells.forEach(cell => {
-                    const romajiEl = cell.querySelector('.rom');
-                    const progressBar = cell.querySelector('.progress');
-                    if (!romajiEl || !progressBar) return;
+            applyAccuracyToTable('#hiragana-table', AccHiraganaList);
+            applyAccuracyToTable('#hiragana-dakuon-table', AccHiraganaList);
 
-                    const romajiRaw = romajiEl.textContent.toUpperCase();
-                    const romaji = romajiRaw.split(' ')[0];
+            total_hiragana_count = Object.values(AccHiraganaList)
+                .reduce((sum, e) => sum + (e.times_learned || 0), 0);
 
-                    if (AccHiraganaList[romaji]) {
-                        const { last10_correct } = AccHiraganaList[romaji];
-                        const accuracy = last10_correct.reduce((a, b) => a + b, 0) / 10;
-                        progressBar.style.setProperty("--progress-width", Math.round(accuracy * 100) + "%");
-                        cell.classList.toggle("filled", accuracy === 1);
-                    }
-                });
-            });
-
-            const hiraganaDakuonRows = document.querySelectorAll('#hiragana-dakuon-table tbody tr');
-            hiraganaDakuonRows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                cells.forEach(cell => {
-                    const romajiEl = cell.querySelector('.rom');
-                    const progressBar = cell.querySelector('.progress');
-                    if (!romajiEl || !progressBar) return;
-
-                    const romajiRaw = romajiEl.textContent.toUpperCase();
-                    const romaji = romajiRaw.split(' ')[0];
-
-                    if (AccHiraganaList[romaji]) {
-                        const { last10_correct } = AccHiraganaList[romaji];
-                        const accuracy = last10_correct.reduce((a, b) => a + b, 0) / 10;
-                        progressBar.style.setProperty("--progress-width", Math.round(accuracy * 100) + "%");
-                        cell.classList.toggle("filled", accuracy === 1);
-                    }
-                });
-            });
-
-            total_hiragana_count = Object.values(AccHiraganaList).reduce((sum, entry) => sum + (entry.times_learned || 0), 0);
         } catch (e) {
             console.warn("Fehler beim Laden von Hiragana Accuracy:", e);
         }
     }
 
+    // Lade Katakana
+    const katakanaData = localStorage.getItem("katakana_accuracy_list");
     if (katakanaData) {
         try {
             AccKatakanaList = decompressAccuracyData(JSON.parse(katakanaData), katakanaList);
 
-            const katakanaRows = document.querySelectorAll('#katakana-table tbody tr');
-            katakanaRows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                cells.forEach(cell => {
-                    const romajiEl = cell.querySelector('.rom');
-                    const progressBar = cell.querySelector('.progress');
-                    if (!romajiEl || !progressBar) return;
+            applyAccuracyToTable('#katakana-table', AccKatakanaList);
+            applyAccuracyToTable('#katakana-dakuon-table', AccKatakanaList);
 
-                    const romajiRaw = romajiEl.textContent.toUpperCase();
-                    const romaji = romajiRaw.split(' ')[0];
+            total_katakana_count = Object.values(AccKatakanaList)
+                .reduce((sum, e) => sum + (e.times_learned || 0), 0);
 
-                    if (AccKatakanaList[romaji]) {
-                        const { last10_correct } = AccKatakanaList[romaji];
-                        const accuracy = last10_correct.reduce((a, b) => a + b, 0) / 10;
-                        progressBar.style.setProperty("--progress-width", Math.round(accuracy * 100) + "%");
-                        cell.classList.toggle("filled", accuracy === 1);
-                    }
-                });
-            });
-
-            const katakanaDakuonRows = document.querySelectorAll('#katakana-dakuon-table tbody tr');
-            katakanaDakuonRows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                cells.forEach(cell => {
-                    const romajiEl = cell.querySelector('.rom');
-                    const progressBar = cell.querySelector('.progress');
-                    if (!romajiEl || !progressBar) return;
-
-                    const romajiRaw = romajiEl.textContent.toUpperCase();
-                    const romaji = romajiRaw.split(' ')[0];
-
-                    if (AccKatakanaList[romaji]) {
-                        const { last10_correct } = AccKatakanaList[romaji];
-                        const accuracy = last10_correct.reduce((a, b) => a + b, 0) / 10;
-                        progressBar.style.setProperty("--progress-width", Math.round(accuracy * 100) + "%");
-                        cell.classList.toggle("filled", accuracy === 1);
-                    }
-                });
-            });
-
-            total_katakana_count = Object.values(AccKatakanaList).reduce((sum, entry) => sum + (entry.times_learned || 0), 0);
         } catch (e) {
             console.warn("Fehler beim Laden von Katakana Accuracy:", e);
         }
     }
 
-    console.log("Accuracy lokal geladen:", AccHiraganaList, `Learned: ${total_hiragana_count}`, AccKatakanaList, `Learned: ${total_katakana_count}`);
+    console.log("Accuracy lokal geladen:",
+        AccHiraganaList, `Learned: ${total_hiragana_count}`,
+        AccKatakanaList, `Learned: ${total_katakana_count}`
+    );
 
-    // Lade Tabellenzustand (state)
+    // Tabellenzustand anwenden
     const table_state = localStorage.getItem("table_state");
     if (table_state) {
         try {
@@ -395,7 +354,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Lade erste Frage
+    // Erste Frage laden
     newQuestion();
 });
 
@@ -499,6 +458,10 @@ function updateProgressBars() {
                 charData.element.classList.remove("filled");
             }
         }
+
+        console.log(accList[charData.romaji].times_correct)
+
+        charData.element.querySelector('.progress_count').innerHTML = accList[charData.romaji].times_correct + " / " + accList[charData.romaji].times_learned;
     });
 }
 
@@ -577,21 +540,6 @@ function applyActiveCellsFromJSON(jsonString) {
     });
 }
 
-// document.addEventListener("DOMContentLoaded", function () {
-//     fetch("database_api.php", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ action: "load-table-state" })
-//     })
-//         .then(res => res.json())
-//         .then(data => {
-//             if (data.status === "success" && data.table_state) {
-//                 applyActiveCellsFromJSON(data.table_state);
-//                 // load first jp to questrion ...
-//                 newQuestion();
-//             }
-//         });
-// });
 
 // hiragana table state database saving / loading <<< end
 
