@@ -304,7 +304,8 @@ html.keyboard-open .learn {
 .progress_count {
     font-size: calc(1rem * var(--table-scale));
     position: relative;
-    margin: calc(0.5rem * var(--table-scale));
+    margin-top: calc(0.5rem * var(--table-scale));
+    margin-bottom: calc(0.5rem * var(--table-scale));
     height: calc(0.5rem * var(--table-scale));
     white-space: nowrap;   /* verhindert Zeilenumbruch */
 }
