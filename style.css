@@ -71,7 +71,8 @@ html.keyboard-open .learn {
 .question {
     height: 50%;
     display: flex;
-    flex-direction: column;   /* <— DAS MACHT ES UNTEREINANDER */
+    flex-direction: column;
+    /* <— DAS MACHT ES UNTEREINANDER */
     align-items: center;
     justify-content: center;
 }
@@ -300,8 +301,13 @@ html.keyboard-open .learn {
 }
 
 
-
-
+.progress_count {
+    font-size: calc(1rem * var(--table-scale));
+    position: relative;
+    margin: calc(0.5rem * var(--table-scale));
+    height: calc(0.5rem * var(--table-scale));
+    white-space: nowrap;   /* verhindert Zeilenumbruch */
+}
 
 
 
@@ -399,6 +405,7 @@ footer {
 #chars-slider:hover::-webkit-slider-thumb {
     background: rgb(90, 210, 255);
 }
+
 #chars-slider:hover::-moz-range-thumb {
     background: rgb(90, 210, 255);
 }
@@ -441,6 +448,7 @@ footer {
 #bias-slider:hover::-webkit-slider-thumb {
     background: rgb(90, 210, 255);
 }
+
 #bias-slider:hover::-moz-range-thumb {
     background: rgb(90, 210, 255);
 }
@@ -491,6 +499,7 @@ footer {
 #hint-slider:hover::-webkit-slider-thumb {
     background: rgb(90, 210, 255);
 }
+
 #hint-slider:hover::-moz-range-thumb {
     background: rgb(90, 210, 255);
 }
